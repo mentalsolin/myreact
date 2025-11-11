@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>myreact</title>
+    </head>
+    <body>
+        <div id="root"></div>
+
+        <script src="./lib/react.js"></script>
+
+        <script type="module">
+            import Footer from "./components/Footer/Footer.js";
+            import Header from "./components/Header/Header.js";
+            import Counter from "./components/Counter/Counter.js";
+            import Name from "./components/Name/Name.js";
+
+            function App() {
+                const [enid, setEnid] = useState("enid");
+                const [wednesday, setWednesday] = useState("wednesday");
+                const [isAllowed, setIsAllowed] = useState(false);
+                const [name, setName] = useState("ffaaa");
+                const [count, setCount] = useState(0);
+                const [cats, setCats] = useState(0);
+
+                const [catUrl, setCatUrl] = useState("");
+
+                const fetchCat = async () => {
+                    try {
+                        const res = await fetch(
+                            "https://cataas.com/cat?height=400&json=true"
+                        );
+
+                        const data = await res.json();
+
+                        console.log(data.url);
+
+                        setCatUrl(data.url);
+                        setCats(cats + 1);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                };
+
+                useEffect(() => {
+                    fetchCat();
+                }, []);
+
+                function handleClick() {
+                    setIsAllowed(!isAllowed);
+                }
+
+                function handleGetCat() {
+                    fetchCat();
+                }
+
+                return createElement(
+                    "div",
+                    { id: "first", class: "item" },
+                    createElement("img", { src: catUrl, height: "400px" }),
+                    createElement("br"),
+                    createElement(
+                        "button",
+                        { onClick: handleGetCat },
+                        "get a new caaaat"
+                    ),
+                    createElement(
+                        "div",
+                        null,
+                        Name({ name: enid, cats: cats })
+                    ),
+                    createElement("div", null, "hi, ", enid),
+                    createElement("div", null, "hi, ", wednesday),
+                    createElement(Header),
+                    createElement(Footer),
+                    createElement(
+                        "div",
+                        null,
+                        Counter({ count: count, setCount: setCount })
+                    ),
+                    createElement(
+                        "button",
+                        { onClick: handleClick },
+                        "click to change ",
+                        isAllowed,
+                        name
+                    ),
+                    createElement(
+                        "div",
+                        null,
+                        isAllowed
+                            ? createElement(
+                                  "div",
+                                  null,
+                                  "this is allowed yaaay!!"
+                              )
+                            : createElement(
+                                  "div",
+                                  null,
+                                  "this isn't allowed... :("
+                              )
+                    )
+                );
+            }
+
+            appComponent = App;
+            appContainer = document.getElementById("root");
+            hookIndex = 0;
+            effectIndex = 0;
+            render(createElement(App), appContainer);
+        </script>
+    </body>
+</html>
